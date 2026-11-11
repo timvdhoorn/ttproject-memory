@@ -1,0 +1,2 @@
+30 2 * * *  backup  /usr/local/bin/backup-rentals --to /srv/backup --keep-days 30
+0 6 * * 1   booking-api  /usr/local/bin/report-weekly

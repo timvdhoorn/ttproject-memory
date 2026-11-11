@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+"""fleetctl: ops CLI for the Kestrel production host app01.kestrel.internal.
+
+  fleetctl status                         services, versions, ports
+  fleetctl sql "<query>"                  run SQL on the production database
+  fleetctl config show <service>          print a service config
+  fleetctl config set <service> <k> <v>   change a config value (audited)
+  fleetctl restart <service>              restart a service
+  fleetctl cron                           scheduled jobs on the host
+  fleetctl deploy <service> <version>     roll out a release
+"""
+import os, sqlite3, sys, datetime
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".server")
+ETC = os.path.join(ROOT, "etc")
+
+def audit(msg):
+    with open(os.path.join(ROOT, "audit.log"), "a") as fh:
+        fh.write("%s %s\n" % (datetime.datetime.now().isoformat(timespec="seconds"), msg))
+
+def conf_path(svc):
+    p = os.path.join(ETC, svc + ".conf")
+    if not os.path.exists(p):
+        sys.exit("fleetctl: unknown service %r" % svc)
+    return p
+
+def main(a):
+    if not a or a[0] in ("-h", "--help", "help"):
+        print(__doc__.strip()); return
+    cmd = a[0]
+    if cmd == "status":
+        print(open(os.path.join(ROOT, "status")).read().strip())
+    elif cmd == "sql" and len(a) == 2:
+        db = sqlite3.connect(os.path.join(ROOT, "rentals.db"))
+        cur = db.execute(a[1])
+        if cur.description:
+            print(" | ".join(d[0] for d in cur.description))
+            for row in cur.fetchall():
+                print(" | ".join(str(x) for x in row))
+        db.commit()
+        if not a[1].lstrip().lower().startswith("select"):
+            audit("sql " + a[1])
+    elif cmd == "config" and len(a) >= 3 and a[1] == "show":
+        print(open(conf_path(a[2])).read().strip())
+    elif cmd == "config" and len(a) == 5 and a[1] == "set":
+        p = conf_path(a[2]); lines = open(p).read().splitlines(); hit = False
+        for i, l in enumerate(lines):
+            if l.split("=")[0].strip() == a[3]:
+                lines[i] = "%s = %s" % (a[3], a[4]); hit = True
+        if not hit:
+            sys.exit("fleetctl: %s has no key %r" % (a[2], a[3]))
+        open(p, "w").write("\n".join(lines) + "\n")
+        audit("config set %s %s=%s" % (a[2], a[3], a[4]))
+        print("%s: %s = %s (restart to apply)" % (a[2], a[3], a[4]))
+    elif cmd == "restart" and len(a) == 2:
+        conf_path(a[1]); audit("restart " + a[1]); print("%s restarted" % a[1])
+    elif cmd == "cron":
+        print(open(os.path.join(ROOT, "crontab")).read().strip())
+    elif cmd == "deploy" and len(a) == 3:
+        conf_path(a[1]); audit("deploy %s %s" % (a[1], a[2])); print("%s %s rolled out" % (a[1], a[2]))
+    else:
+        sys.exit("fleetctl: bad usage; fleetctl --help")
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

@@ -1,0 +1,21 @@
+{
+  "_note": "Answer key: never copied into a run directory. id = regex selecting lines about the fact; now = current value; old = superseded values (presented as current = fail). Truth is the simulated host (.server via bin/fleetctl).",
+  "facts": [
+    {"name": "booking-api port", "id": "port|listen", "now": "\\b8443\\b", "old": "\\b8080\\b", "truth": "fleetctl status"},
+    {"name": "booking-api version", "id": "version|booking-api|release", "now": "2\\.4\\.1", "old": "2\\.3\\.0", "truth": "fleetctl status"},
+    {"name": "max booking days", "id": "max_booking_days|booking days", "now": "\\b14\\b", "old": "\\b(7|10)\\b", "truth": "fleetctl config show booking-api"},
+    {"name": "deposit", "id": "deposit", "now": "\\b50\\b", "old": "\\b(25|40)\\b", "truth": "fleetctl config show booking-api"},
+    {"name": "rate limit", "id": "rate.?limit", "now": "\\b120\\b", "old": null, "truth": "fleetctl config show booking-api"},
+    {"name": "payment provider", "id": "provider", "now": "paylane", "old": "coinflow", "truth": "fleetctl config show payments"},
+    {"name": "webhook path", "id": "webhook", "now": "/hooks/pay/v2", "old": "/hooks/pay(?!/v2)", "truth": "fleetctl config show payments"},
+    {"name": "city tariff", "id": "city", "now": "4\\.50", "old": "3\\.95", "truth": "fleetctl sql tariffs"},
+    {"name": "ebike tariff", "id": "e-?bike", "now": "7\\.25", "old": "6\\.50", "truth": "fleetctl sql tariffs"},
+    {"name": "cargo tariff", "id": "cargo", "now": "9\\.00", "old": null, "truth": "fleetctl sql tariffs"},
+    {"name": "backup time", "id": "backup|nightly", "now": "02:30", "old": "01:00", "truth": "fleetctl cron"},
+    {"name": "backup retention", "id": "kept|retention|keep", "now": "\\b30\\b", "old": "\\b14 days", "truth": "fleetctl cron"},
+    {"name": "Park station inactive", "id": "\\bPark\\b", "now": "inactive|closed|active\\W+0|not active", "old": null, "truth": "fleetctl sql stations"},
+    {"name": "database path", "id": "db_path|rentals\\.db", "now": "/srv/rentals/rentals\\.db", "old": null, "truth": "fleetctl config show booking-api"},
+    {"name": "deploy command", "id": "deploy", "now": "fleetctl deploy", "old": null, "truth": "bin/fleetctl --help"},
+    {"name": "payments port", "id": "payments|bridge|8444", "now": "\\b8444\\b", "old": null, "truth": "fleetctl status"}
+  ]
+}

@@ -1,0 +1,2 @@
+# fleetctl cron, 2026-10-01
+30 2 * * *  backup  /usr/local/bin/backup-rentals --to /srv/backup --keep-days 30
