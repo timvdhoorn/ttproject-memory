@@ -8,7 +8,7 @@ Tariffs live in the `tariffs` table; the deposit is a booking-api setting, see [
 | Bike type | Per hour | Per day |
 | --- | --- | --- |
 | city | 4.50 | 22.00 |
-| ebike | 7.25 | 35.00 |
+| ebike | 6.50 | 35.00 |
 | cargo | 9.00 | 45.00 |
 
 ## Deposit
