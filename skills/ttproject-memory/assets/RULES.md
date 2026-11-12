@@ -41,7 +41,7 @@ Page (labels in the page language, e.g. `Bron`/`Bijgewerkt`):
 ```markdown
 # Title
 
-> Source: <system + query, raw/ file, human doc>
+> Source: <system + read-only command or query that returns the values, raw/ file, human doc>
 > Updated: YYYY-MM-DD
 
 One paragraph: what this is and where it lives.
