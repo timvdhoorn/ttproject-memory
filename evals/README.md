@@ -17,7 +17,7 @@ Results append to `<work>/results.jsonl`; run directories stay for inspection un
 | `write`, `write-hook` | ready | daily write without naming the skill: learned, corrected and told facts land on the owning page in place, no history, 1-3 log lines, lint 0; with and without the `Stop` hook |
 | `read` | ready | answers from the knowledge base; any host query counts as a miss |
 | `dream` | dirty | lint 0, duplicates merged, `status.md` shorter, one `dream` log line, no fact lost |
-| `overview` | ready | bare `/project-memory` reports and changes nothing |
+| `overview` | ready | bare `/ttproject-memory` reports and changes nothing |
 | `route` | fresh | routing pair, first tool call with `--max-turns 2` |
 | `write-old`, `growth-new`, `growth-old` | ready / oldrules | blind comparison inputs: the old rules file against the new; growth is five sessions changing one value, then a fresh question |
 

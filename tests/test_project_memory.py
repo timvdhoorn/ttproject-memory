@@ -14,7 +14,7 @@ import unittest
 from datetime import date, datetime, timedelta, timezone
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SKILL = os.path.join(REPO, "skills", "project-memory")
+SKILL = os.path.join(REPO, "skills", "ttproject-memory")
 FIXTURE = os.path.join(REPO, "tests", "fixture")
 LINT = os.path.join(SKILL, "scripts", "lint.py")
 HOOK = os.path.join(SKILL, "assets", "stop_hook.py")

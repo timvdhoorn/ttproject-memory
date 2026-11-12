@@ -1,4 +1,4 @@
-# project-memory
+# ttproject-memory
 
 A knowledge base that coding agents keep current for one project: how its systems work and what their state is now. Git holds the history.
 
@@ -9,7 +9,7 @@ It suits projects where the truth lives somewhere an agent cannot simply read: a
 Open your project with your coding agent and give it this:
 
 ```text
-Clone https://github.com/timvdhoorn/project-memory-template to a temporary folder, read skills/project-memory/SKILL.md there and run its "init" section for this repository. Delete the temporary folder when you are done.
+Clone https://github.com/timvdhoorn/ttproject-memory to a temporary folder, read skills/ttproject-memory/SKILL.md there and run its "init" section for this repository. Delete the temporary folder when you are done.
 ```
 
 The agent asks one round of questions (folder name, page language, areas, where human-facing docs live), then installs everything into your repository. Nothing outside the repository is needed afterwards. An existing docs or wiki folder can be migrated in the same run.
@@ -47,13 +47,13 @@ Only `index.md` is loaded in every session, and lint keeps it under 6,000 bytes.
 
 ## The skill, optional
 
-Copy [`skills/project-memory`](skills/project-memory) into your agent's skills folder (for Claude Code: `~/.claude/skills/`) to get three commands:
+Copy [`skills/ttproject-memory`](skills/ttproject-memory) into your agent's skills folder (for Claude Code: `~/.claude/skills/`) to get three commands:
 
 | Command | Does |
 | --- | --- |
-| `/project-memory` | Shows what is stored, and whether the installed files are behind this skill |
-| `/project-memory init` | Installs into a repository, or migrates an existing docs folder |
-| `/project-memory dream` | Runs a consolidation pass |
+| `/ttproject-memory` | Shows what is stored, and whether the installed files are behind this skill |
+| `/ttproject-memory init` | Installs into a repository, or migrates an existing docs folder |
+| `/ttproject-memory dream` | Runs a consolidation pass |
 
 ## Development
 

@@ -1,6 +1,6 @@
 ---
-name: project-memory
-description: Set up or consolidate a project's agent knowledge base (wiki of current state, routing index, status page, one-line log). Use for "/project-memory" (overview of what is stored), "/project-memory init" in a new repo or to migrate an existing docs/wiki folder, and "/project-memory dream".
+name: ttproject-memory
+description: Set up or consolidate a project's agent knowledge base (wiki of current state, routing index, status page, one-line log). Use for "/ttproject-memory" (overview of what is stored), "/ttproject-memory init" in a new repo or to migrate an existing docs/wiki folder, and "/ttproject-memory dream".
 ---
 
 # Project memory
@@ -12,7 +12,7 @@ The contract is [assets/RULES.md](assets/RULES.md); read it before any command.
 
 ## No command
 
-"/project-memory" alone shows what is stored; it changes nothing.
+"/ttproject-memory" alone shows what is stored; it changes nothing.
 
 - No knowledge folder in this repo: say so in one line and offer `init`.
 - Otherwise read `index.md`, `status.md` and the top five lines of `log.md`, run lint, and reply in the user's language with:
