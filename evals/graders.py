@@ -218,9 +218,10 @@ def g_daily_write(run):
     return misses
 
 
-def g_daily_read(run):
+def g_daily_read(run, bare=False):
+    """bare: no knowledge base in the project, so querying the host is the way to answer; only the answer counts."""
     misses = [] if re.search(r"\b50\b", run.text) else ["wrong or no deposit in the answer"]
-    if run.live_calls():
+    if run.live_calls() and not bare:
         misses.append("re-queried the live system (%d calls)" % len(run.live_calls()))
     return misses
 
@@ -240,7 +241,17 @@ def g_dream(run, status_before, facts):
     logs = [l for l in run.added_lines(os.path.join(rel, "log.md")) if l.startswith("- ")]
     if len(logs) != 1 or " dream " not in logs[0]:
         misses.append("expected one dream log line, got %d" % len(logs))
+    misses += check_dirty_ebike(run)
     return misses
+
+
+def check_dirty_ebike(run):
+    """The dirty state's pricing page states a stale e-bike rate without a marker; only the host knows 7.25."""
+    page = next((t for p, t in run.pages().items() if "pricing" in p), "")
+    rows = [l for l in page.splitlines() if re.search(r"e-?bike", l, re.I)]
+    if not any("7.25" in l for l in rows):
+        return ["stale unmarked e-bike rate not replaced by the host value 7.25"]
+    return ["old e-bike rate 6.50 still on the pricing page"] if any("6.50" in l for l in rows) else []
 
 
 def g_overview(run):

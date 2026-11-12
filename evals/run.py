@@ -2,7 +2,7 @@
 """Run ttproject-memory scenarios against a fresh `claude -p` session, one at a time.
 
 Usage: python3 evals/run.py <scenario|all> [--model M] [--runs N] [--work DIR] [--clean]
-Scenarios: init-fresh init-messy write write-hook read dream overview route
+Scenarios: init-fresh init-messy write write-hook read read-bare dream overview route
            write-old growth-new growth-old (the last three feed the blind comparison).
 Results append to <work>/results.jsonl; the table prints at the end.
 """
@@ -82,9 +82,14 @@ def make_copy(work, state, hook=False):
     return root
 
 
+def tpath(root, sid):
+    """Transcript path under $CLAUDE_CONFIG_DIR (default ~/.claude)."""
+    base = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.expanduser("~/.claude")
+    return os.path.join(base, "projects", re.sub(r"[^A-Za-z0-9]", "-", os.path.realpath(root)), sid + ".jsonl")
+
+
 def transcript(root, sid):
-    enc = re.sub(r"[^A-Za-z0-9]", "-", os.path.realpath(root))
-    path = os.path.expanduser("~/.claude/projects/%s/%s.jsonl" % (enc, sid))
+    path = tpath(root, sid)
     calls, usage, seen = [], {"in": 0, "out": 0}, set()
     if not os.path.exists(path):
         return calls, usage, None
@@ -102,10 +107,6 @@ def transcript(root, sid):
             usage["in"] += u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0) + u.get("cache_read_input_tokens", 0)
             usage["out"] += u.get("output_tokens", 0)
     return calls, usage, path
-
-
-def tpath(root, sid):
-    return os.path.expanduser("~/.claude/projects/%s/%s.jsonl" % (re.sub(r"[^A-Za-z0-9]", "-", os.path.realpath(root)), sid))
 
 
 def finished_but_waiting(root, sid, quiet=60):
@@ -196,8 +197,8 @@ def scenario(name, work, rep, model):
         t = claude(root, PROMPTS["write"], model)
         run = G.Run(root, t["calls"], t["text"])
         return (G.g_daily_write(run) if name != "write-old" else []), total(t), root
-    if name == "read":
-        root = make_copy(work, "ready")
+    if name in ("read", "read-bare"):
+        root = make_copy(work, "ready" if name == "read" else "fresh")
         t = claude(root, PROMPTS["read"], model)
         return G.g_daily_read(G.Run(root, t["calls"], t["text"])), total(t), root
     if name == "dream":

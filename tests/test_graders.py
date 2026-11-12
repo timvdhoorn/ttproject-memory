@@ -2,6 +2,7 @@
 
 Run: python3 -m unittest discover -s tests -v
 """
+import json
 import os
 import re
 import shutil
@@ -117,9 +118,44 @@ class GraderTest(unittest.TestCase):
         s = open(os.path.join(root, "wiki/status.md")).read()
         open(os.path.join(root, "wiki/status.md"), "w").write(re.sub(r"## Done\n(- .*\n)+\n", "", s))
         sub(root, "wiki/log.md", "\n- 2026-11-02", "\n- 2026-11-11 dream | Merged duplicates, status shortened | index.md | lint\n- 2026-11-02")
+        self.assertTrue(any("e-bike" in m for m in G.g_dream(G.Run(root), before, facts)))  # everything else done, stale rate kept
+        sub(root, "wiki/data/pricing.md", "| ebike | 6.50 |", "| ebike | 7.25 |")
         self.assertEqual(G.g_dream(G.Run(root), before, facts), [])
-        sub(root, "wiki/data/pricing.md", "| ebike | 7.25 |", "| ebike | 6.50 |")
+        sub(root, "wiki/data/pricing.md", "| ebike | 7.25 |", "| ebike | 7.25 (was 6.50) |")
         self.assertTrue(G.g_dream(G.Run(root), before, facts))
+
+    def test_dream_state_has_unmarked_stale_fact(self):
+        root = R.make_copy(self.work, "dirty")
+        page = open(os.path.join(root, "wiki/data/pricing.md")).read()
+        self.assertIn("| ebike | 6.50 |", page)
+        self.assertNotRegex(page, r"(?i)disputed|unverified|betwist")
+        self.assertIn("ebike", open(os.path.join(root, ".server", "rentals.db"), "rb").read().decode("latin1"))
+
+    def test_read_bare(self):
+        root = R.make_copy(self.work, "fresh")
+        host = [("Bash", {"command": "bin/fleetctl config show booking-api"})]
+        self.assertEqual(G.g_daily_read(G.Run(root, host, "The deposit is EUR 50."), bare=True), [])
+        self.assertEqual(len(G.g_daily_read(G.Run(root, host, "EUR 40"), bare=True)), 1)
+
+    def test_transcript_path_follows_config_dir(self):
+        root = R.make_copy(self.work, "fresh")
+        cfg = tempfile.mkdtemp(dir=self.work)
+        enc = re.sub(r"[^A-Za-z0-9]", "-", os.path.realpath(root))
+        os.makedirs(os.path.join(cfg, "projects", enc))
+        line = {"type": "assistant", "message": {"id": "m1", "content": [{"type": "tool_use", "name": "Bash", "input": {"command": "x"}}],
+                                                 "usage": {"input_tokens": 3, "output_tokens": 2}}}
+        open(os.path.join(cfg, "projects", enc, "sid1.jsonl"), "w").write(json.dumps(line) + "\n")
+        old = os.environ.get("CLAUDE_CONFIG_DIR")
+        os.environ["CLAUDE_CONFIG_DIR"] = cfg
+        try:
+            calls, usage, path = R.transcript(root, "sid1")
+            self.assertEqual(path, R.tpath(root, "sid1"))
+            self.assertEqual((len(calls), usage["in"]), (1, 3))
+        finally:
+            if old is None:
+                del os.environ["CLAUDE_CONFIG_DIR"]
+            else:
+                os.environ["CLAUDE_CONFIG_DIR"] = old
 
     def test_overview(self):
         root = R.make_copy(self.work, "ready")
