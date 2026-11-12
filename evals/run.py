@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run project-memory scenarios against a fresh `claude -p` session, one at a time.
+"""Run ttproject-memory scenarios against a fresh `claude -p` session, one at a time.
 
 Usage: python3 evals/run.py <scenario|all> [--model M] [--runs N] [--work DIR] [--clean]
 Scenarios: init-fresh init-messy write write-hook read dream overview route
@@ -20,7 +20,7 @@ import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-SKILL = os.path.join(REPO, "skills", "project-memory")
+SKILL = os.path.join(REPO, "skills", "ttproject-memory")
 PROJECT = os.path.join(HERE, "project")
 sys.path.insert(0, HERE)
 import graders as G  # noqa: E402
@@ -28,16 +28,16 @@ import graders as G  # noqa: E402
 ANSWERS = ("1. `wiki/`. 2. English. 3. Areas: api, data, ops. 4. Customer procedures are on the shared drive `Ops/Procedures`. "
            "5. The host is reached only with `bin/fleetctl`; no turn-end hook. 6. No other repos share this. Go ahead.")
 PROMPTS = {
-    "init-1": "/project-memory init",
-    "init-messy": "/project-memory init\n\nMigrate the existing `docs/` folder. My answers up front: " + ANSWERS.replace("1. `wiki/`.", "1. `wiki/` (move docs/ there)."),
-    "init-coexist": "/project-memory init\n\nMigrate the existing `docs/` folder and clean up everything in it. My answers up front: "
+    "init-1": "/ttproject-memory init",
+    "init-messy": "/ttproject-memory init\n\nMigrate the existing `docs/` folder. My answers up front: " + ANSWERS.replace("1. `wiki/`.", "1. `wiki/` (move docs/ there)."),
+    "init-coexist": "/ttproject-memory init\n\nMigrate the existing `docs/` folder and clean up everything in it. My answers up front: "
                     + ANSWERS.replace("1. `wiki/`.", "1. Keep it in `docs/` if you can."),
     "write": ("Paylane says our webhook calls get rate-limited. Can you check which webhook path and rate limit we're running with, "
               "and raise the booking-api rate limit to 300 per minute? Also FYI: Paylane told me today their webhook calls now come "
               "from 203.0.113.0/24, we'll need that for the firewall later."),
     "read": "Quick one: what deposit do we charge per booking at the moment?",
-    "dream": "/project-memory dream",
-    "overview": "/project-memory",
+    "dream": "/ttproject-memory dream",
+    "overview": "/ttproject-memory",
     "route-yes": "Our agents keep forgetting how this setup works between sessions. Can you set up a knowledge base in this repo that they keep current?",
     "route-no": "Our agents keep forgetting what bin/fleetctl can do. Can you list its commands for me?",
     "growth": ["Finance set the e-bike hourly rate to 7.60 from today. Please put it live.",
@@ -65,7 +65,7 @@ def make_copy(work, state, hook=False):
     if os.path.isfile(os.path.join(root, "wiki", "index.md")) and state != "oldrules":
         for src in ("assets/RULES.md", "assets/DREAM.md", "scripts/lint.py"):
             shutil.copy(os.path.join(SKILL, src), os.path.join(root, "wiki"))
-    shutil.copytree(SKILL, os.path.join(root, ".claude", "skills", "project-memory"), ignore=shutil.ignore_patterns("__pycache__"))
+    shutil.copytree(SKILL, os.path.join(root, ".claude", "skills", "ttproject-memory"), ignore=shutil.ignore_patterns("__pycache__"))
     if hook:
         hooks = os.path.join(root, ".claude", "hooks")
         os.makedirs(hooks)

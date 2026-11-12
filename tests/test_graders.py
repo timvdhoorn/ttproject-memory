@@ -129,7 +129,7 @@ class GraderTest(unittest.TestCase):
 
     def test_route(self):
         root = R.make_copy(self.work, "fresh")
-        skill = ("Skill", {"skill": "project-memory", "args": "init"})
+        skill = ("Skill", {"skill": "ttproject-memory", "args": "init"})
         bash = ("Bash", {"command": "ls"})
         self.assertEqual(G.g_route(G.Run(root, [skill]), True), [])
         self.assertTrue(G.g_route(G.Run(root, [bash]), True))

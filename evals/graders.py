@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LINT = os.path.join(os.path.dirname(HERE), "skills", "project-memory", "scripts", "lint.py")
+LINT = os.path.join(os.path.dirname(HERE), "skills", "ttproject-memory", "scripts", "lint.py")
 KEY = json.load(open(os.path.join(HERE, "key.json")))["facts"]
 OLD_BLOCK = re.compile(r"\*\*(Status:\s*)?(Outdated|Superseded|Deprecated|Verouderd)\b")
 HISTORY = re.compile(r"(?i)\bpreviously\b|\bformerly\b|changed from|raised from|lowered from|\bwas (set|raised|changed|lowered)\b|→|\bused to be\b")
@@ -165,7 +165,7 @@ def g_init_fresh(run):
     wrong = [f["name"] for f in KEY if f.get("old") and any(re.search(f["old"], l, re.I) for _, l in fact_lines(run.pages(), f))]
     misses += ["wrong value for %s" % w for w in wrong]
     block = open(os.path.join(run.root, "AGENTS.md"), encoding="utf-8").read().split("## Project memory")[-1]
-    if "skills/project-memory" in block:
+    if "skills/ttproject-memory" in block:
         misses.append("block points into the skill folder")
     return misses + check_installed(run) + instruction_block(run, os.path.relpath(kb, run.root))
 
@@ -256,11 +256,11 @@ def g_overview(run):
 
 def g_route(run, expect):
     first = run.calls[0] if run.calls else ("none", {})
-    took = first[0] == "Skill" and "project-memory" in json.dumps(first[1])
+    took = first[0] == "Skill" and "ttproject-memory" in json.dumps(first[1])
     if expect and not took:
-        return ["first call %s, expected the project-memory skill" % first[0]]
-    if not expect and any(c[0] == "Skill" and "project-memory" in json.dumps(c[1]) for c in run.calls):
-        return ["took the project-memory skill"]
+        return ["first call %s, expected the ttproject-memory skill" % first[0]]
+    if not expect and any(c[0] == "Skill" and "ttproject-memory" in json.dumps(c[1]) for c in run.calls):
+        return ["took the ttproject-memory skill"]
     return []
 
 
