@@ -200,7 +200,7 @@ def scenario(name, work, rep, model):
     if name in ("read", "read-bare"):
         root = make_copy(work, "ready" if name == "read" else "fresh")
         t = claude(root, PROMPTS["read"], model)
-        return G.g_daily_read(G.Run(root, t["calls"], t["text"])), total(t), root
+        return G.g_daily_read(G.Run(root, t["calls"], t["text"]), bare=name == "read-bare"), total(t), root
     if name == "dream":
         root = make_copy(work, "dirty")
         before = os.path.getsize(os.path.join(root, "wiki", "status.md"))
