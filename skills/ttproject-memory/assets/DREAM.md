@@ -9,5 +9,6 @@ Done when lint exits 0 (or only markers you listed remain) and one log line reco
    A page that defines a term `GLOSSARY.md` defines, or retells an ADR's reasoning, gives way: the page keeps the current state and links there. Where the two disagree, change neither and list it for the user.
 3. Move misplaced facts to their owning page; split an oversized page by topic.
 4. Shorten `status.md`: finished items leave, their facts go to the owning page.
-5. Stale markers: settle each with evidence you can read (repo, `raw/`, human docs, a read-only query of the live system); list any left for the user.
+5. Verify against sources: for every page, replay its `Source` read-only (repo, `raw/`, human docs, a read-only query of the live system; never a command that changes anything) and compare each value it states, marked or not.
+   Replace a differing value in place by RULES.md Write. Mark `Disputed` with `Settle:` only what you cannot settle; list those and every stale marker you could not settle for the user.
 6. Append `- <date> dream | <what changed> | index.md | lint` at the top of `log.md`; run lint again.
