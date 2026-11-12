@@ -241,14 +241,14 @@ class HookTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.root)
 
-    def run_hook(self, tools, active=False):
+    def run_hook(self, tools, active=False, hook=HOOK):
         entries = [{"type": "user", "timestamp": self.start, "message": {"content": "do it"}}]
         entries += [{"type": "assistant", "message": {"content": [{"type": "tool_use", "name": n, "input": i}]}} for n, i in tools]
         with open(self.tx, "w") as fh:
             fh.write("\n".join(json.dumps(e) for e in entries))
         data = {"transcript_path": self.tx, "stop_hook_active": active}
         env = dict(os.environ, CLAUDE_PROJECT_DIR=self.root)
-        res = subprocess.run([sys.executable, HOOK], input=json.dumps(data), capture_output=True, text=True, env=env)
+        res = subprocess.run([sys.executable, hook], input=json.dumps(data), capture_output=True, text=True, env=env)
         self.assertEqual(res.returncode, 0, res.stderr)
         return json.loads(res.stdout) if res.stdout.strip() else None
 
@@ -282,6 +282,15 @@ class HookTest(unittest.TestCase):
 
     def test_second_stop_never_blocks(self):
         self.assertIsNone(self.run_hook(self.SSH, active=True))
+
+    def test_empty_tool_pattern_matches_no_tool(self):
+        with open(HOOK, encoding="utf-8") as fh:
+            src = fh.read()
+        hook = os.path.join(self.root, "hook.py")
+        with open(hook, "w", encoding="utf-8") as fh:
+            fh.write(re.sub(r'^TRIGGER_TOOLS = .*$', 'TRIGGER_TOOLS = ""', src, count=1, flags=re.M))
+        self.assertIsNone(self.run_hook([("Read", {"file_path": "x"})], hook=hook))
+        self.assertEqual(self.run_hook(self.SSH, hook=hook)["decision"], "block")
 
 
 if __name__ == "__main__":

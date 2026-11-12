@@ -18,7 +18,7 @@ import sys
 from datetime import datetime
 
 KB_DIR = "wiki"                                  # knowledge folder, relative to the repo root
-TRIGGER_TOOLS = r"^mcp__(ssh|remote)__"          # tool names that touch the live system
+TRIGGER_TOOLS = r"^mcp__(ssh|remote)__"          # tool names that touch the live system ("" = none)
 TRIGGER_BASH = r"\b(ssh|psql|kubectl)\b"         # Bash commands that touch the live system ("" = none)
 MESSAGE = ("This turn touched the live system, but no page under %s/ changed. Record what you verified "
            "or changed on its owning page (plus one log line), or say in one sentence why there was nothing to record.")
@@ -68,7 +68,7 @@ def decide(data, root):
     if start is None:
         return None
     live = any(
-        re.search(TRIGGER_TOOLS, name)
+        (TRIGGER_TOOLS and re.search(TRIGGER_TOOLS, name))
         or (TRIGGER_BASH and name == "Bash" and re.search(TRIGGER_BASH, str(inp.get("command", ""))))
         for name, inp in tool_uses(entries[start:])
     )
