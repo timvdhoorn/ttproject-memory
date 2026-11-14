@@ -38,7 +38,7 @@ Only `index.md` is loaded in every session, and lint keeps it under 6,000 bytes.
 - **Write.** A fact goes on exactly one page; other pages link to it without repeating the value. A changed value replaces the old one in place. Pages hold no history.
 - **Unknown state.** When the real state cannot be settled, the claim gets a dated `Disputed` or `Unverified` marker that says how to settle it.
 - **Lint.** `python3 wiki/lint.py` checks the index, links, anchors, history words, markers, sizes, the log format and secret-like strings. Exit 0 is clean.
-- **Dream.** Once the last dream pass is over 7 days old and changes were logged since, lint prints `dream due` and the agent offers a pass: merge duplicates, move misplaced facts, shorten the status page, settle stale markers. The pass runs in a subagent when the agent has one.
+- **Dream.** Once the last dream pass is over 7 days old and changes were logged since, lint prints `dream due` and the agent offers a pass: merge duplicates, move misplaced facts, shorten the status page, settle stale markers, mine recent sessions for facts that were verified but never written down. The pass runs in a subagent when the agent has one.
 - **Optional hook.** For a live system that is hard to reach, a Claude Code `Stop` hook sends a turn back once when it touched that system without changing a page.
 
 ## Beside a glossary and ADRs
