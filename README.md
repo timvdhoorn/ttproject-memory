@@ -41,9 +41,9 @@ Only `index.md` is loaded in every session, and lint keeps it under 6,000 bytes.
 - **Dream.** Once the last dream pass is over 7 days old and changes were logged since, lint prints `dream due` and the agent offers a pass: merge duplicates, move misplaced facts, shorten the status page, settle stale markers, mine recent sessions for facts that were verified but never written down. The pass runs in a subagent when the agent has one.
 - **Optional hook.** For a live system that is hard to reach, a Claude Code `Stop` hook sends a turn back once when it touched that system without changing a page.
 
-## Beside a glossary
+## Beside other docs
 
-`GLOSSARY.md`, `docs/solutions/` and `docs/agents/` belong to other skills (an existing `docs/adr/` is left alone, never written or routed to). project-memory reads them and links to them, and never changes them: a term's meaning stays in the glossary, a decision's reason in a short comment at the code it governs, and the pages state the resulting current state.
+`docs/solutions/` and `docs/agents/` belong to other skills (an existing `docs/adr/` is left alone, never written or routed to). project-memory reads them and links to them, and never changes them: a decision's reason stays in a short comment at the code it governs, and the pages state the resulting current state.
 
 ## The skill, optional
 

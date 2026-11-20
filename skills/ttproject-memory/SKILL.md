@@ -8,7 +8,7 @@ description: Set up or consolidate a project's agent knowledge base (wiki of cur
 The contract is [assets/RULES.md](assets/RULES.md); read it before any command.
 `init` **installs** `RULES.md`, `DREAM.md` and `lint.py` into the knowledge folder, so the knowledge base works where this skill is absent. Lint: `python3 <folder>/lint.py` (exit 0 clean, 1 findings).
 
-**Neighbour docs** are files other skills own: `GLOSSARY.md`, `GLOSSARY-MAP.md`, `CONTEXT.md`, `docs/solutions/`, `docs/agents/` and the `## Agent skills` block. Every command here reads them and leaves them byte-identical: no edit, move, rename, reformat or copy into the knowledge folder.
+**Neighbour docs** are files other skills own: `docs/solutions/`, `docs/agents/` and the `## Agent skills` block. Every command here reads them and leaves them byte-identical: no edit, move, rename, reformat or copy into the knowledge folder.
 
 ## No command
 
